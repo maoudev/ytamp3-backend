@@ -40,15 +40,13 @@ export const downloadHandler = async (req, res) => {
 
     await new Promise((resolve, reject) => {
       process.then((audio) => {
-        audio
-          .setAudioBitRate(320)
-          .fnExtractSoundToMP3(`./src/songs/${title}.mp3`, function (error) {
-            if (error) {
-              reject(error);
-            } else {
-              resolve();
-            }
-          });
+        audio.fnExtractSoundToMP3(`./src/songs/${title}.mp3`, function (error) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
       });
     });
 
