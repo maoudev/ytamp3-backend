@@ -4,9 +4,6 @@ import ffmpeg from "fluent-ffmpeg";
 import NodeID3 from "node-id3";
 import path from "path";
 
-const ffmpegPath = "/usr/bin/ffmpeg";
-ffmpeg.setFfmpegPath(ffmpegPath);
-
 export const downloadHandler = async (req, res) => {
   const { url } = req.body;
 
