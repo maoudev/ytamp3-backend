@@ -1,8 +1,11 @@
 import ytdl from "ytdl-core";
 import fs from "fs";
-import ffmpeg from "ffmpeg";
+import ffmpeg from "fluent-ffmpeg";
 import NodeID3 from "node-id3";
 import path from "path";
+
+const ffmpegPath = "/usr/bin/ffmpeg";
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 export const downloadHandler = async (req, res) => {
   const { url } = req.body;
@@ -36,24 +39,22 @@ export const downloadHandler = async (req, res) => {
       return res.status(500).json({ error: error.message });
     });
 
-    const process = new ffmpeg(`./src/videos/${title}.mp4`, {});
-
     await new Promise((resolve, reject) => {
-      process.then((audio) => {
-        audio.fnExtractSoundToMP3(`./src/songs/${title}.mp3`, function (error) {
-          if (error) {
-            reject(error);
-          } else {
-            resolve();
-          }
+      ffmpeg(`./src/videos/${title}.mp4`)
+        .outputOptions("-vn", "-ab", "128k", "-ar", "44100")
+        .toFormat("mp3")
+        .save(`./src/songs/${title}.mp3`)
+        .on("error", (error) => reject(error))
+        .on("end", () => {
+          console.log("Conversion finished.");
+          resolve();
         });
-      });
+    }).catch(() => {
+      return res.status(500);
     });
 
     await setInfoToMp3(title, author);
-    return res
-      .status(200)
-      .json({ url: `http://localhost:3000/yt/song/${title}.mp3` });
+    return res.status(200).json({ url: `/yt/song/${title}.mp3` });
   } catch (error) {
     return res.status(500);
   }
@@ -65,6 +66,7 @@ export const getSong = async (req, res) => {
   try {
     const path_file = path.resolve(`./src/songs/${fileName}`);
     if (fs.existsSync(path_file)) {
+      res.setHeader("Content-Type", "audio/mpeg");
       return res.sendFile(path_file);
     } else {
       return res.status(404).json({ error: "file not found" });
