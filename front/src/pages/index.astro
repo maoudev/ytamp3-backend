@@ -5,12 +5,22 @@ import Layout from "../layouts/Layout.astro";
 <Layout title="YouTube to MP3 Converter - Descarga vídeos de YouTube en MP3">
   <main class="flex flex-col">
     <download-song>
+      <div
+        class="w-10/12 mx-auto flex flex-col items-center justify-center mb-10"
+      >
+        <h2 class="text-2xl font-bold text-red-500">¿Cómo funciona?</h2>
+        <p class="text-lg text-center mt-5 lg:w-2/5">
+          Ingresa la URL del video de YouTube que deseas descargar y haz click
+          en el botón "Descargar". El proceso de conversión puede tardar unos
+          segundos.
+        </p>
+      </div>
       <form
         method="post"
-        class="w-4/5 mx-auto py-10 flex-col flex items-center justify-center shadow-[0_3px_30px_rgb(0,0,0,0.1)] rounded-lg lg:w-2/6"
+        class="w-4/5 mx-auto p-10 flex-col flex items-center justify-center shadow-[0_3px_30px_rgb(0,0,0,0.1)] rounded-lg lg:w-2/6"
       >
         <div id="div-url" class="flex flex-col">
-          <label for="url" class="text-xl font-mono font-bold text-red-500">
+          <label for="url" class="text-lg font-mono font-bold text-red-500">
             Ingresa la URL del video:</label
           >
           <input
@@ -65,7 +75,7 @@ import Layout from "../layouts/Layout.astro";
           this.querySelector("div[role=status]")?.classList.add("flex");
           try {
             url = this.querySelector("input")?.value || "";
-            const response = await fetch(`http://localhost:3000/yt/download`, {
+            const response = await fetch(`/yt/download`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
