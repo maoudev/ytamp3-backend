@@ -9,7 +9,7 @@ import Layout from "../layouts/Layout.astro";
         class="w-10/12 mx-auto flex flex-col items-center justify-center mb-10"
       >
         <h2 class="text-2xl font-bold text-red-500">¿Cómo funciona?</h2>
-        <p class="text-lg text-center mt-5 lg:w-2/5">
+        <p class="text-lg text-center text-black dark:text-white mt-5 lg:w-2/5">
           Ingresa la URL del video de YouTube que deseas descargar y haz click
           en el botón "Descargar". El proceso de conversión puede tardar unos
           segundos.
@@ -33,7 +33,7 @@ import Layout from "../layouts/Layout.astro";
 
         <button
           type="submit"
-          class="mt-5 mb-5 py-2 px-8 text-lg font-medium rounded-lg shadow-[0_3px_30px_rgb(255,0,0,0.2)] text-black hover:scale-110"
+          class="mt-5 mb-5 py-2 px-8 text-lg font-medium rounded-lg shadow-[0_3px_30px_rgb(255,0,0,0.2)] text-black dark:text-white hover:scale-110"
           >Descargar</button
         >
 
@@ -124,6 +124,7 @@ import Layout from "../layouts/Layout.astro";
           this.querySelector("#div-url")?.classList.remove("hidden");
           this.querySelector("#div-url")?.classList.add("flex");
           this.querySelector("button")?.classList.remove("hidden");
+          location.replace("/");
         });
       }
     }
