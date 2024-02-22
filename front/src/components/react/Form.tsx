@@ -43,9 +43,10 @@ export default function Form() {
   };
 
   return (
-    <div>
+    <div className="">
       <form
-        className="flex flex-col items-center mt-4 space-y-5"
+        className="flex flex-col items-center mt-4 
+         space-y-5"
         onSubmit={handleSubmit}
       >
         <label className="dark:text-white text-lg lg:text-md" htmlFor="url">

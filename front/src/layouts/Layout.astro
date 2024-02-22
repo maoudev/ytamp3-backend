@@ -44,6 +44,12 @@ const { title, description } = Astro.props;
     <Footer />
 
     <style is:global>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       @font-face {
         font-family: "Subjectivity-Black";
         src: url("/fonts/Subjectivity-Black.woff2") format("woff2");
