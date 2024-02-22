@@ -8,13 +8,16 @@ import { router } from "./src/routes/yt.js";
 
 config();
 
+if (!fs.existsSync("./public")) {
+  fs.mkdirSync("./public");
+}
+
 if (!fs.existsSync("./public/songs")) {
   fs.mkdirSync("./public/songs");
 }
 
 if (!fs.existsSync("./public/videos")) {
   fs.mkdirSync("./public/videos");
-  x;
 }
 
 const app = express();
