@@ -24,7 +24,7 @@ export const downloadHandler = async (req, res) => {
     const format = ytdl.chooseFormat(info.formats, { quality: "highestaudio" });
 
     const video = ytdl(url, { format: format }).pipe(
-      fs.createWriteStream(`./src/videos/${title}.mp4`)
+      fs.createWriteStream(`./public/videos/${title}.mp4`)
     );
 
     await new Promise((resolve, reject) => {
@@ -40,10 +40,10 @@ export const downloadHandler = async (req, res) => {
     });
 
     await new Promise((resolve, reject) => {
-      ffmpeg(`./src/videos/${title}.mp4`)
+      ffmpeg(`./public/videos/${title}.mp4`)
         .outputOptions("-vn", "-ab", "128k", "-ar", "44100")
         .toFormat("mp3")
-        .save(`./src/songs/${title}.mp3`)
+        .save(`./public/songs/${title}.mp3`)
         .on("error", (error) => reject(error))
         .on("end", () => {
           console.log("Conversion finished.");
@@ -54,9 +54,12 @@ export const downloadHandler = async (req, res) => {
     });
 
     await setInfoToMp3(title, author);
-    return res.status(200).json({ url: `/yt/song/${title}.mp3` });
+    return res.status(200).json({ file: `${title}.mp3` });
   } catch (error) {
     return res.status(500);
+  } finally {
+    await deleteVideo(title);
+    await deleteSong(title);
   }
 };
 
@@ -64,7 +67,7 @@ export const getSong = async (req, res) => {
   const { fileName } = req.params;
   if (!fileName) return res.status(400).json({ error: "file name required" });
   try {
-    const path_file = path.resolve(`./src/songs/${fileName}`);
+    const path_file = path.resolve(`./public/songs/${fileName}`);
     if (fs.existsSync(path_file)) {
       res.setHeader("Content-Type", "audio/mpeg");
       return res.sendFile(path_file);
@@ -73,7 +76,7 @@ export const getSong = async (req, res) => {
     }
   } finally {
     let file = fileName.split("/").pop().split(".")[0];
-    await deleteFiles(file);
+    await deleteSong(file);
   }
 };
 
@@ -84,7 +87,7 @@ const setInfoToMp3 = async (title, author) => {
     title: originalTitle,
     artist: author,
   };
-  NodeID3.write(tags, `./src/songs/${title}.mp3`, function (err) {
+  NodeID3.write(tags, `./public/songs/${title}.mp3`, function (err) {
     if (err) {
       console.log(err);
     } else {
@@ -93,15 +96,24 @@ const setInfoToMp3 = async (title, author) => {
   });
 };
 
-const deleteFiles = async (fileName) => {
+const deleteSong = async (fileName) => {
   setTimeout(async () => {
     try {
-      await fs.promises.rm(`./src/videos/${fileName}.mp4`);
-      await fs.promises.rm(`./src/songs/${fileName}.mp3`);
+      await fs.promises.rm(`./public/songs/${fileName}.mp3`);
     } catch (error) {
       console.log(error);
     }
-  }, 60000);
+  }, 60000 * 4);
+};
+
+const deleteVideo = async (fileName) => {
+  setTimeout(async () => {
+    try {
+      await fs.promises.rm(`./public/videos/${fileName}.mp4`);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 };
 
 const validateYouTubeUrl = (url) => {
