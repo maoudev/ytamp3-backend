@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "build": "cd ./client && pnpm install && pnpm build && cd .. && node app.js ",
+    "build": "cd ./client && pnpm install && pnpm build && cd ..",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
