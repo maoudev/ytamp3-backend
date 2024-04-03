@@ -27,7 +27,7 @@ export default function DownloadButton({
       className="bg-transparent text-center dark:text-white rounded-lg border border-red-300 hover:border-red-500 px-3 py-2 outline-none transition-colors"
       onClick={handleClick}
     >
-      Download
+      Descargar
     </button>
   );
 }

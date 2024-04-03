@@ -1,11 +1,11 @@
 import ytdl from "ytdl-core";
 import fs from "fs";
+import ffmpegStatic from "ffmpeg-static";
 import ffmpeg from "fluent-ffmpeg";
 import NodeID3 from "node-id3";
 import path from "path";
 
-const ffmpegPath = "/usr/bin/ffmpeg";
-ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfmpegPath(ffmpegStatic);
 
 export const downloadHandler = async (req, res) => {
   const { url } = req.body;
@@ -23,21 +23,26 @@ export const downloadHandler = async (req, res) => {
     const author = info.videoDetails.author.name;
     const format = ytdl.chooseFormat(info.formats, { quality: "highestaudio" });
 
-    const video = ytdl(url, { format: format }).pipe(
-      fs.createWriteStream(`./public/videos/${title}.mp4`)
-    );
+    try {
+      const video = ytdl(url, { format: format }).pipe(
+        fs.createWriteStream(`./public/videos/${title}.mp4`, { flags: "w" })
+      );
 
-    await new Promise((resolve, reject) => {
-      video.on("finish", () => {
-        console.log("downloaded");
-        resolve();
+      await new Promise((resolve, reject) => {
+        video.on("finish", () => {
+          console.log("downloaded");
+
+          resolve();
+        });
+        video.on("error", (error) => {
+          reject(error);
+        });
+      }).catch((error) => {
+        return res.status(500).json({ error: error.message });
       });
-      video.on("error", (error) => {
-        reject(error);
-      });
-    }).catch((error) => {
-      return res.status(500).json({ error: error.message });
-    });
+    } catch (error) {
+      console.log(error);
+    }
 
     await new Promise((resolve, reject) => {
       ffmpeg(`./public/videos/${title}.mp4`)

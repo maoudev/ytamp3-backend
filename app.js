@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import cors from "cors";
 import fs from "fs";
 
-import { handler as ssrHandler } from "../front/dist/server/entry.mjs";
+import { handler as ssrHandler } from "./client/dist/server/entry.mjs";
 import { router } from "./src/routes/yt.js";
 
 config();
@@ -33,7 +33,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use("/", express.static("../front/dist/client"));
+app.use("/", express.static("./client/dist/client"));
 app.use(ssrHandler);
 
 app.use("/yt", router);
