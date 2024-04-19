@@ -30,8 +30,6 @@ export const downloadHandler = async (req, res) => {
 
       await new Promise((resolve, reject) => {
         video.on("finish", () => {
-          console.log("downloaded");
-
           resolve();
         });
         video.on("error", (error) => {
@@ -51,7 +49,6 @@ export const downloadHandler = async (req, res) => {
         .save(`./public/songs/${title}.mp3`)
         .on("error", (error) => reject(error))
         .on("end", () => {
-          console.log("Conversion finished.");
           resolve();
         });
     }).catch(() => {
@@ -59,7 +56,10 @@ export const downloadHandler = async (req, res) => {
     });
 
     await setInfoToMp3(title, author);
-    return res.status(200).json({ file: `${title}.mp3` });
+    res.setHeader("Content-Type", "application/json");
+    return res.send({
+      fileName: title,
+    });
   } catch (error) {
     return res.status(500);
   } finally {
@@ -72,13 +72,6 @@ export const getSong = async (req, res) => {
   const { fileName } = req.params;
   if (!fileName) return res.status(400).json({ error: "file name required" });
   try {
-    const path_file = path.resolve(`./public/songs/${fileName}`);
-    if (fs.existsSync(path_file)) {
-      res.setHeader("Content-Type", "audio/mpeg");
-      return res.sendFile(path_file);
-    } else {
-      return res.status(404).json({ error: "file not found" });
-    }
   } finally {
     let file = fileName.split("/").pop().split(".")[0];
     await deleteSong(file);
