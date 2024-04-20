@@ -115,6 +115,7 @@ const deleteVideo = async (fileName) => {
 };
 
 const validateYouTubeUrl = (url) => {
-  const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+/;
+  const pattern =
+    /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?([a-zA-Z0-9_-]{11})/;
   return pattern.test(url);
 };
