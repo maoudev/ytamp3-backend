@@ -23,7 +23,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static("public/songs"));
+app.use(express.static("./public/songs"));
 const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,POST",
